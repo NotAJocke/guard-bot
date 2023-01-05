@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  modelId String   @id @default(auto()) @map("_id") @db.ObjectId
+  id      String   @unique
+  members Member[]
+  bans    Ban[]
+}
+
+model Member {
+  modelId String @id @default(auto()) @map("_id") @db.ObjectId
+  id      String @unique
+  guild   Guild  @relation(fields: [guildId], references: [id])
+  guildId String
+  ban     Ban?
+}
+
+model Ban {
+  modelId  String    @id @default(auto()) @map("_id") @db.ObjectId
+  member   Member    @relation(fields: [memberId], references: [id])
+  memberId String    @unique
+  guild    Guild    @relation(fields: [guildId], references: [id])
+  guildId  String
+  banned   Boolean   @default(false)
+  until    Int?
+}
