@@ -1,18 +1,19 @@
 {
-	"name": "anti-dc-discord",
-	"version": "1.0.0",
+	"name": "guard-bot",
+	"version": "0.0.1",
 	"description": "",
-	"main": "index.js",
+	"main": "dist/src-bot/index.js",
 	"scripts": {
 		"server:dev": "ts-node src-server/server.ts",
 		"bot:dev": "ts-node src-bot/index.ts",
 		"build": "tsc && pnpm _copy-files",
 		"_copy-files": "cp .env ./dist",
 		"bot:run": "node dist/src-bot/index.js",
-		"clean": "rm -rf dist"
+		"clean": "rm -rf dist",
+		"db:start": "mongod --dbpath='./data' --replSet='rs0'",
+		"db:reload": "pnpx prisma generate"
 	},
-	"author": "",
-	"license": "ISC",
+	"author": "JockeRider199",
 	"devDependencies": {
 		"@types/express": "^4.17.15",
 		"@types/jsonwebtoken": "^8.5.9",
