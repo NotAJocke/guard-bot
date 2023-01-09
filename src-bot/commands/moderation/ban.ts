@@ -101,7 +101,7 @@ const command: SlashCommand = {
 	},
 
 	settings: {
-		enabled: true,
+		enabled: false,
 	},
 };
 

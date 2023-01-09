@@ -92,7 +92,9 @@ export class Client extends DSClient {
 			if (this.slashCommands.length === 0) {
 				console.log("No slash commands loaded");
 			} else {
-				console.log(`Synchronizing ${this.slashCommands.length} slash commands`);
+				console.log(
+					`Synchronizing ${this.slashCommands.length} slash commands`
+				);
 				data.push(...this.slashCommands.map((cmd) => cmd.data.toJSON()));
 			}
 		}

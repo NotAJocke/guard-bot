@@ -18,7 +18,7 @@ const contextMenu: ContextMenu = {
 	},
 
 	settings: {
-		enabled: true,
+		enabled: false,
 	},
 };
 

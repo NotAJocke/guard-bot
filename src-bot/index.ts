@@ -17,17 +17,11 @@ async function main(): Promise<void> {
 		await client.unSyncInteractions();
 	}
 
-	if (process.env.PRODUCTION == "TRUE") {
-		await client.syncGlobalInteractions({
-			slashCommands: true,
-			contextMenus: true,
-		});
-	} else {
-		await client.syncInteractionsForGuild(client.getConfig().testGuildId!, {
-			slashCommands: true,
-			contextMenus: true,
-		});
-	}
+	await client.syncInteractionsForGuild(client.getConfig().guildId, {
+		slashCommands: true,
+		contextMenus: true,
+	});
+
 	await client.login(process.env.CLIENT_TOKEN);
 }
 

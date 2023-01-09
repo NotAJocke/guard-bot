@@ -3,6 +3,8 @@ import {
 	ButtonBuilder,
 	ButtonStyle,
 	ChatInputCommandInteraction,
+	EmbedBuilder,
+	GuildMember,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
@@ -36,15 +38,34 @@ const command: SlashCommand = {
 		);
 
 		if (targetChannel?.isTextBased()) {
-			targetChannel.send({ content: "Test", components: [actionRow] });
-			interaction.reply({ content: "Sent", ephemeral: true });
+			let embed = new EmbedBuilder()
+				.setTitle("Clique ici pour avoir l'accès au serveur")
+				.setColor("Green");
+			targetChannel.send({ embeds: [embed], components: [actionRow] });
+			interaction.reply({ content: "Envoyé", ephemeral: true });
 		}
 	},
 
-	async execButtons(interaction, buttonId) {
+	async execButtons(interaction, buttonId, client) {
 		switch (buttonId) {
 			case "verif-btn":
-				interaction.reply({ content: "You got verified", ephemeral: true });
+				let roleId = client.getConfig().communityRoleVerified;
+				let role = interaction.guild!.roles.cache.get(roleId);
+				if (role) {
+					if (!(<GuildMember>interaction.member!).roles.cache.has(roleId)) {
+						(<GuildMember>interaction.member!).roles.add(role);
+						interaction.reply({
+							content: "Vous avez été verifié",
+							ephemeral: true,
+						});
+					} else {
+						interaction.reply({
+							content: "Vous avez déjà accepté le règlement",
+							ephemeral: true,
+						});
+					}
+				}
+
 				break;
 		}
 	},

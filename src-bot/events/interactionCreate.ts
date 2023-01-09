@@ -29,9 +29,8 @@ export const event: Event = {
 				.getSlashCommands()
 				.find((cmd) => cmd.data.name == commandName);
 			if (command && command.execButtons) {
-				command.execButtons(interaction, buttonId);
+				command.execButtons(interaction, buttonId, client);
 			}
-		
 		} else if (interaction.isContextMenuCommand()) {
 			let commandName = interaction.commandName;
 

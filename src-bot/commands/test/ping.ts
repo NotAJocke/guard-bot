@@ -36,7 +36,7 @@ const slashCommand: SlashCommand = {
 	},
 
 	settings: {
-		enabled: true,
+		enabled: false,
 	},
 };
 

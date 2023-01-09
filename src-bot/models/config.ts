@@ -2,13 +2,14 @@ import { GatewayIntentBits } from "discord.js";
 
 interface Config {
 	intents: GatewayIntentBits[];
-	testGuildId?: string;
+	guildId: string;
 	loggingChannels: {
 		ban: {
 			name: string;
 			id: string;
 		};
 	};
+	communityRoleVerified: string;
 }
 
 export default Config;

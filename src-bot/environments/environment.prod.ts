@@ -8,6 +8,8 @@ const config: Config = {
 			id: "",
 		},
 	},
+	communityRoleVerified: "",
+	guildId: "",
 };
 
 export default config;

@@ -7,9 +7,9 @@ services:
       - ./data:/data/db
     command: --replSet="rs0"
     restart: unless-stopped
-  
-  bot: 
-    build: 
+
+  bot:
+    build:
       context: .
       dockerfile: Dockerfile.Bot
     links:
@@ -19,4 +19,3 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-    
