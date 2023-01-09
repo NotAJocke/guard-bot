@@ -54,9 +54,10 @@ export class Client extends DSClient {
 			for (let file of files) {
 				let command = require(join(__dirname, "..", "commands", folder, file));
 				let commandName = file.split(".")[0];
-				if (!command.default.settings.enabled) return;
-				this.slashCommands.push(command.default);
-				console.log(`Load Command: ${commandName}`);
+				if (command.default.settings.enabled) {
+					this.slashCommands.push(command.default);
+					console.log(`Load Command: ${commandName}`);
+				}
 			}
 		}
 		console.log(`${this.slashCommands.length} commands loaded`);
@@ -67,9 +68,10 @@ export class Client extends DSClient {
 		for (let file of files) {
 			let command = require(join(__dirname, "..", "context-menus", file));
 			let commandName = file.split(".")[0];
-			if (!command.default.settings.enabled) return;
-			this.contextMenus.push(command.default);
-			console.log(`Load Menu: ${commandName}`);
+			if (command.default.settings.enabled) {
+				this.contextMenus.push(command.default);
+				console.log(`Load Menu: ${commandName}`);
+			}
 		}
 		console.log(`${this.contextMenus.length} menus loaded`);
 	}
@@ -81,18 +83,18 @@ export class Client extends DSClient {
 		if (syncInteractions.contextMenus) {
 			if (this.contextMenus.length === 0) {
 				console.log("No context menus loaded");
-				return [];
+			} else {
+				console.log(`Synchronizing ${this.contextMenus.length} context menus`);
+				data.push(...this.contextMenus.map((menu) => menu.data.toJSON()));
 			}
-			console.log(`Synchronizing ${this.contextMenus.length} context menus`);
-			data.push(...this.contextMenus.map((menu) => menu.data.toJSON()));
 		}
 		if (syncInteractions.slashCommands) {
 			if (this.slashCommands.length === 0) {
 				console.log("No slash commands loaded");
-				return [];
+			} else {
+				console.log(`Synchronizing ${this.slashCommands.length} slash commands`);
+				data.push(...this.slashCommands.map((cmd) => cmd.data.toJSON()));
 			}
-			console.log(`Synchronizing ${this.slashCommands.length} slash commands`);
-			data.push(...this.slashCommands.map((cmd) => cmd.data.toJSON()));
 		}
 		return data;
 	}
