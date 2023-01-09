@@ -31,15 +31,7 @@ export const event: Event = {
 			if (command && command.execButtons) {
 				command.execButtons(interaction, buttonId);
 			}
-
-			// décommenter si on utilise les context menus
-			/* let contextcommand = client.contextMenus.find(
-				(cmd) => cmd.data.name == commandName
-			);
-			console.log(contextcommand);
-			if (contextcommand && contextcommand.execButtons) {
-				contextcommand.execButtons(interaction, buttonId);
-			} */
+		
 		} else if (interaction.isContextMenuCommand()) {
 			let commandName = interaction.commandName;
 

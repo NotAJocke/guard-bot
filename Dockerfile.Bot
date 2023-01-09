@@ -1,0 +1,10 @@
+FROM node:18.10-slim
+
+WORKDIR /home/guard-bot
+
+COPY ./dist /home/guard-bot
+
+RUN npm install
+RUN apt-get update
+RUN apt-get install -y openssl
+RUN npx prisma generate

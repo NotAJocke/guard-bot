@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export class Database {
 	public static async init() {
-		await prisma.$connect();
+		await prisma.$connect().then(() => console.log("Connected to database"));
 	}
 
 	public static async getOrCreateGuild(id: string) {
