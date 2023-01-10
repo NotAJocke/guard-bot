@@ -1,6 +1,6 @@
 import { Interaction } from "discord.js";
 import { Client } from "../models/client";
-import { Event } from "../models/Event";
+import { Event } from "../models/event";
 
 export const event: Event = {
 	async exec(client: Client, interaction: Interaction) {
