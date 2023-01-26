@@ -6,8 +6,8 @@ const config: Config = {
 	guildId: "704412119847796856",
 	loggingChannels: {
 		ban: {
-			name: "",
-			id: "",
+			name: "logs",
+			id: "1068174411590541322",
 		},
 	},
 	communityRoleVerified: "1062091468401021011",

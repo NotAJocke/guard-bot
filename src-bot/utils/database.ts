@@ -92,4 +92,15 @@ export class Database {
 			},
 		});
 	}
+
+	public static async setRaidmodeState(state: boolean, guildId: string) {
+		await prisma.guild.update({
+			where: {
+				id: guildId
+			},
+			data: {
+				raidmode: state
+			}
+		});
+	}
 }

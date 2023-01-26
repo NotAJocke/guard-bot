@@ -9,10 +9,11 @@ datasource db {
 }
 
 model Guild {
-  modelId String   @id @default(auto()) @map("_id") @db.ObjectId
-  id      String   @unique
-  members Member[]
-  bans    Ban[]
+  modelId  String   @id @default(auto()) @map("_id") @db.ObjectId
+  id       String   @unique
+  members  Member[]
+  bans     Ban[]
+  raidmode Boolean  @default(false)
 }
 
 model Member {
