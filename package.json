@@ -12,7 +12,8 @@
 		"clean": "rm -rf dist",
 		"db:start": "mongod --dbpath='./data' --replSet='rs0'",
 		"db:reload": "pnpx prisma generate",
-		"deploy": "pnpm build && docker-compose build && docker-compose up -d",
+		"db:prod": "node ./scripts/prisma.js",
+		"deploy": "pnpm build && pnpm run db:prod && docker-compose build && docker-compose up -d",
 		"switch": "node ./scripts/prod.js && pnpx prisma generate"
 	},
 	"author": "JockeRider199",
