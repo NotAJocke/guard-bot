@@ -39,10 +39,11 @@ export class Client extends DSClient {
 		let files = readdirSync(join(__dirname, "..", "events"));
 		for (let file of files) {
 			let event = require(join(__dirname, "..", "events", file));
-			if (!event.default.settings.enabled) return;
-			let eventName = file.split(".")[0];
-			this.on(eventName, (...args) => event.default.exec(this, ...args));
-			console.log(`Load Event: ${eventName}`);
+			if (event.default.settings.enabled) {
+				let eventName = file.split(".")[0];
+				this.on(eventName, (...args) => event.default.exec(this, ...args));
+				console.log(`Load Event: ${eventName}`);
+			}
 		}
 		console.log(`${files.length} events loaded`);
 	}
@@ -109,7 +110,7 @@ export class Client extends DSClient {
 		if (data.length <= 0) return console.log("No data to synchronise");
 		let rest = new REST({ version: "10" });
 
-		if(process.env.PRODUCTION) {
+		if(process.env.PRODUCTION == "TRUE") {
 			rest.setToken(process.env.PROD_CLIENT_TOKEN!);
 		} else {
 			rest.setToken(process.env.CLIENT_TOKEN!);
@@ -117,7 +118,7 @@ export class Client extends DSClient {
 		try {
 			rest.put(
 				Routes.applicationGuildCommands(
-					process.env.PRODUCTION ? process.env.PROD_CLIENT_ID! : process.env.CLIENT_ID!,
+					process.env.PRODUCTION == "TRUE" ? process.env.PROD_CLIENT_ID! : process.env.CLIENT_ID!,
 					guildId
 				),
 				{ body: data }
