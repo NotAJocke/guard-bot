@@ -107,10 +107,19 @@ export class Client extends DSClient {
 	) {
 		let data = await this.getSynchronizableInteractions(syncInteractions);
 		if (data.length <= 0) return console.log("No data to synchronise");
-		let rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN!);
+		let rest = new REST({ version: "10" });
+
+		if(process.env.PRODUCTION) {
+			rest.setToken(process.env.PROD_CLIENT_TOKEN!);
+		} else {
+			rest.setToken(process.env.CLIENT_TOKEN!);
+		}
 		try {
 			rest.put(
-				Routes.applicationGuildCommands(process.env.CLIENT_ID!, guildId),
+				Routes.applicationGuildCommands(
+					process.env.PRODUCTION ? process.env.PROD_CLIENT_ID! : process.env.CLIENT_ID!,
+					guildId
+				),
 				{ body: data }
 			);
 		} catch (e) {
@@ -118,7 +127,7 @@ export class Client extends DSClient {
 		}
 	}
 
-	public async syncGlobalInteractions(
+	/* public async syncGlobalInteractions(
 		syncInteractions: SynchronizableInteractions
 	) {
 		let data = await this.getSynchronizableInteractions(syncInteractions);
@@ -131,7 +140,7 @@ export class Client extends DSClient {
 		} catch (e) {
 			console.log(`${e}`, "error");
 		}
-	}
+	} */
 
 	/**
 	 * Unloads all slash commands and context menus from the bot.
