@@ -4,11 +4,10 @@
 	"description": "",
 	"main": "src-bot/index.js",
 	"scripts": {
-		"server:dev": "ts-node src-server/server.ts",
 		"bot:dev": "ts-node src-bot/index.ts",
 		"build": "tsc && pnpm _copy-files",
 		"_copy-files": "cp .env ./dist && cp -r prisma dist",
-		"bot:run": "node src-bot/index.js",
+		"bot:run": "node src/client/index.js",
 		"clean": "rm -rf dist",
 		"db:start": "mongod --dbpath='./data' --replSet='rs0'",
 		"db:reload": "pnpx prisma generate",
