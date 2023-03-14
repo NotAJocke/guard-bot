@@ -4,12 +4,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Guild {
-  modelId  String   @id @default(auto()) @map("_id") @db.ObjectId
+  modelId  String   @id @default(uuid())
   id       String   @unique
   members  Member[]
   bans     Ban[]
@@ -17,7 +17,7 @@ model Guild {
 }
 
 model Member {
-  modelId String @id @default(auto()) @map("_id") @db.ObjectId
+  modelId String @id @default(uuid())
   id      String @unique
   guild   Guild  @relation(fields: [guildId], references: [id])
   guildId String
@@ -25,7 +25,7 @@ model Member {
 }
 
 model Ban {
-  modelId  String   @id @default(auto()) @map("_id") @db.ObjectId
+  modelId  String   @id @default(uuid())
   member   Member   @relation(fields: [memberId], references: [id])
   memberId String   @unique
   guild    Guild    @relation(fields: [guildId], references: [id])

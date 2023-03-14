@@ -1,21 +1,29 @@
 services:
-  mongodb:
-    image: mongo:latest
+  db:
+    image: postgres:latest
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - ./data:/data/db
-    command: --replSet="rs0"
+      - ./data:/var/lib/postgresql/data
     restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   bot:
     build:
       context: .
       dockerfile: Dockerfile.Bot
     links:
-      - mongodb
-    stdin_open: true
-    tty: true
-    deploy:
-      restart_policy:
-        condition: on-failure
+      - db
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped

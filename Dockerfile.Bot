@@ -8,3 +8,5 @@ RUN npm install
 RUN apt-get update
 RUN apt-get install -y openssl
 RUN npx prisma generate
+
+CMD node src/client/index.js
