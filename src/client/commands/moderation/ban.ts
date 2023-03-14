@@ -7,6 +7,8 @@ import {
 } from "discord.js";
 import { SlashCommand } from "../../models/slash-commands";
 import { Report } from "../../models/report";
+import ms from "ms";
+import { Database } from "../../utils/database";
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -62,20 +64,30 @@ const command: SlashCommand = {
 				throw Error("PermissionsIssue");
 			}
 
-			/* interaction.guild?.bans.create(member, {
-          reason: reasonOption,
-          deleteMessageSeconds: 7,
-        }); */
+			interaction.guild?.bans.create(member, {
+				reason: reasonOption,
+				deleteMessageSeconds: 7,
+			});
+
+			if(timeOption) {
+				await Database.tempBanMember(member.id, member.guild.id, ms(timeOption))
+			}
+
+			if (channelOption && channelOption instanceof TextChannel) {
+				let fetch = await channelOption.messages.fetch();
+				let messages = fetch
+					.filter((m) => m.author.id === member.id)
+					.first(30)
+					.reverse()
+					.map((m) => m.content);
+				
+				await Database.banMemberWithData(member.id, member.guild.id, messages)
+			}
 
 			interaction.reply({
 				content: `${member} a été banni du serveur.`,
 				ephemeral: true,
 			});
-
-			if (channelOption && channelOption instanceof TextChannel) {
-				let fetch = await channelOption.messages.fetch();
-				let messages = fetch.filter((m) => m.author.id == member.id);
-			}
 
 			new Report({
 				author: interaction.member as GuildMember,
@@ -91,6 +103,7 @@ const command: SlashCommand = {
 				thumbnail: member.user.displayAvatarURL(),
 			}).sendToChannel(interaction.channel as TextChannel);
 		} catch (err: any) {
+			console.log(err)
 			interaction.reply({
 				content: `Je ne peux pas bannir ce membre ${
 					err.message.startsWith("PermissionsIssue") ? "(Permissions)." : ""

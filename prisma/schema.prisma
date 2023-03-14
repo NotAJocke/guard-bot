@@ -25,11 +25,12 @@ model Member {
 }
 
 model Ban {
-  modelId  String  @id @default(auto()) @map("_id") @db.ObjectId
-  member   Member  @relation(fields: [memberId], references: [id])
-  memberId String  @unique
-  guild    Guild   @relation(fields: [guildId], references: [id])
+  modelId  String   @id @default(auto()) @map("_id") @db.ObjectId
+  member   Member   @relation(fields: [memberId], references: [id])
+  memberId String   @unique
+  guild    Guild    @relation(fields: [guildId], references: [id])
   guildId  String
-  banned   Boolean @default(false)
+  banned   Boolean  @default(false)
   until    Int?
+  data     String[]
 }

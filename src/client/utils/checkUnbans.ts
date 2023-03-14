@@ -7,13 +7,13 @@ export async function checkUnbans(client: Client) {
 		let bans = await Database.getBannedMembers();
 
 		bans.forEach(async (ban) => {
-			if (ban.until! <= Date.now()) {
+			if (ban.until && ban.until <= Date.now()) {
 				await Database.unbanMember(ban.memberId, ban.guildId);
 				const guild = await client.guilds.fetch(ban.guildId);
 				const member = await guild.members.fetch(ban.memberId);
-				await guild.bans.remove(member);
+				await guild.bans.remove(member).catch(() => { });
 				console.log(`Unbanned ${ban.memberId}`);
 			}
 		});
-	}, 1000 * 60 * 5);
+	}, 1000 * 60 * 15);
 }

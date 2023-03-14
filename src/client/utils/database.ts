@@ -93,6 +93,37 @@ export class Database {
 		});
 	}
 
+	public static async banMemberWithData(id: string, guildId: string, data: string[]) {
+		let member = await this.getOrCreateMember(id, guildId);
+
+		let alreadyBanned = await prisma.ban.findFirst({
+			where:{
+				memberId: id,
+				guildId,
+			}
+		})
+
+		if(alreadyBanned) {
+			await prisma.ban.update({
+				where: {
+					modelId: alreadyBanned.modelId,
+				},
+				data: {
+					data,
+				},
+			});
+		} else {
+			await prisma.ban.create({
+				data: {
+					memberId: member.id,
+					guildId,
+					banned: true,
+					data,
+				},
+			});
+		}
+	}
+
 	public static async setRaidmodeState(state: boolean, guildId: string) {
 		await prisma.guild.update({
 			where: {
