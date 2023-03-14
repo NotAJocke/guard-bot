@@ -1,4 +1,4 @@
-import { PrismaClient, Member, Ban } from "../../node_modules/.prisma/client";
+import { PrismaClient, Member, Ban } from "../../../node_modules/.prisma/client";
 
 const prisma = new PrismaClient();
 
