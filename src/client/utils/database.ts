@@ -30,9 +30,7 @@ export class Database {
 	}
 
 	public static async getBannedMembers(): Promise<Ban[]> {
-		const bannedMembers = await prisma.ban.findMany({
-			where: { banned: true },
-		});
+		const bannedMembers = await prisma.ban.findMany({});
 
 		return bannedMembers;
 	}
@@ -62,7 +60,12 @@ export class Database {
 	public static async getBanStateOfMember(id: string, guildId: string) {
 		let memberData = await this.getOrCreateMember(id, guildId);
 		let memberBan = await prisma.ban.findFirst({
-			where: { memberId: memberData.id, guildId },
+			where: { 
+				memberId: memberData.id,
+				member: {
+					guildId
+				}
+			},
 		});
 
 		return memberBan;
@@ -80,26 +83,29 @@ export class Database {
 		}
 	}
 
-	public static async tempBanMember(id: string, guildId: string, time: number) {
+	public static async tempBanMember(id: string, guildId: string, time: number, moderator: string, reason: string) {
 		let member = await this.getOrCreateMember(id, guildId);
 
 		await prisma.ban.create({
 			data: {
-				memberId: member.id,
 				guildId,
-				banned: true,
+				memberId: member.id,
 				until: Date.now() + time,
+				moderator,
+				reason
 			},
 		});
 	}
 
-	public static async banMemberWithData(id: string, guildId: string, data: string[]) {
+	public static async banMemberWithData(id: string, guildId: string, moderator: string, reason: string, data: string[]) {
 		let member = await this.getOrCreateMember(id, guildId);
 
 		let alreadyBanned = await prisma.ban.findFirst({
 			where:{
 				memberId: id,
-				guildId,
+				member: {
+					guildId
+				},
 			}
 		})
 
@@ -115,9 +121,10 @@ export class Database {
 		} else {
 			await prisma.ban.create({
 				data: {
-					memberId: member.id,
 					guildId,
-					banned: true,
+					memberId: member.id,
+					moderator,
+					reason,
 					data,
 				},
 			});

@@ -12,25 +12,37 @@ model Guild {
   modelId  String   @id @default(uuid())
   id       String   @unique
   members  Member[]
-  bans     Ban[]
   raidmode Boolean  @default(false)
+  bans     Ban[]
 }
 
 model Member {
-  modelId String @id @default(uuid())
-  id      String @unique
-  guild   Guild  @relation(fields: [guildId], references: [id])
-  guildId String
-  ban     Ban?
+  modelId      String  @id @default(uuid())
+  id           String  @unique
+  guild        Guild   @relation(fields: [guildId], references: [id])
+  guildId      String
+  internalNote String?
+  warns        Warn[]
+  ban          Ban?
+}
+
+model Warn {
+  modelId   String @id @default(uuid())
+  reason    String
+  moderator String
+  date      BigInt
+  member    Member @relation(fields: [memberId], references: [id])
+  memberId  String
 }
 
 model Ban {
-  modelId  String   @id @default(uuid())
-  member   Member   @relation(fields: [memberId], references: [id])
-  memberId String   @unique
-  guild    Guild    @relation(fields: [guildId], references: [id])
-  guildId  String
-  banned   Boolean  @default(false)
-  until    Int?
-  data     String[]
+  modelId   String   @id @default(uuid())
+  reason    String
+  moderator String
+  until     BigInt?
+  member    Member   @relation(fields: [memberId], references: [id])
+  memberId  String   @unique
+  guild     Guild    @relation(fields: [guildId], references: [id])
+  guildId   String
+  data      String[]
 }

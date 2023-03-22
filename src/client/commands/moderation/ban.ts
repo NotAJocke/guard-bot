@@ -70,7 +70,7 @@ const command: SlashCommand = {
 			});
 
 			if(timeOption) {
-				await Database.tempBanMember(member.id, member.guild.id, ms(timeOption))
+				await Database.tempBanMember(member.id, member.guild.id, ms(timeOption), interaction.member!.user.username, reasonOption)
 			}
 
 			if (channelOption && channelOption instanceof TextChannel) {
@@ -81,7 +81,7 @@ const command: SlashCommand = {
 					.reverse()
 					.map((m) => m.content);
 				
-				await Database.banMemberWithData(member.id, member.guild.id, messages)
+				await Database.banMemberWithData(member.id, member.guild.id, interaction.member!.user.username, reasonOption, messages)
 			}
 
 			interaction.reply({
