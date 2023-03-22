@@ -141,4 +141,36 @@ export class Database {
 			},
 		});
 	}
+
+	public static async addNoteToMember(id: string, guildId: string, note: string) {
+		let member = await this.getOrCreateMember(id, guildId);
+
+		await prisma.member.update({
+			where: {
+				id: member.id,
+			},
+			data: {
+				internalNote: member.internalNote ? member.internalNote + "\n" + note : note,
+			}
+		});
+	}
+
+	public static async removeNotesFromMember(id: string, guildId: string) {
+		let member = await this.getOrCreateMember(id, guildId);
+
+		await prisma.member.update({
+			where: {
+				id: member.id,
+			},
+			data: {
+				internalNote: "",
+			}
+		});
+	}
+
+	public static async getNotesOfMember(id: string, guildId: string) {
+		let member = await this.getOrCreateMember(id, guildId);
+
+		return member.internalNote;
+	}
 }
