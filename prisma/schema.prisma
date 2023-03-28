@@ -9,11 +9,15 @@ datasource db {
 }
 
 model Guild {
-  modelId  String   @id @default(uuid())
-  id       String   @unique
-  members  Member[]
-  raidmode Boolean  @default(false)
-  bans     Ban[]
+  modelId          String   @id @default(uuid())
+  id               String   @unique
+  members          Member[]
+  raidmode         Boolean  @default(false)
+  bans             Ban[]
+  warns            Warn[]
+  ticketCategoryId String?
+  ticketCount      Int      @default(0000)
+  tickets          Ticket[]
 }
 
 model Member {
@@ -33,6 +37,8 @@ model Warn {
   date      BigInt
   member    Member @relation(fields: [memberId], references: [id])
   memberId  String
+  guild     Guild  @relation(fields: [guildId], references: [id])
+  guildId   String
 }
 
 model Ban {
@@ -45,4 +51,12 @@ model Ban {
   guild     Guild    @relation(fields: [guildId], references: [id])
   guildId   String
   data      String[]
+}
+
+model Ticket {
+  modelId   String @id @default(uuid())
+  channelId String @unique
+  ownerId   String
+  guild     Guild  @relation(fields: [guildId], references: [id])
+  guildId   String
 }
