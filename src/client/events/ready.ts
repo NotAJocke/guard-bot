@@ -1,5 +1,5 @@
-import { Client } from "../models/client";
-import { Event } from "../models/event";
+import { type Client } from "../models/client";
+import { type Event } from "../models/event";
 import { checkUnbans } from "../utils/checkUnbans";
 
 export const readyEvent: Event = {

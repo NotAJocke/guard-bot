@@ -1,9 +1,9 @@
 import {
-	ChatInputCommandInteraction,
+	type ChatInputCommandInteraction,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../models/slash-commands";
+import { type SlashCommand } from "../../models/slash-commands";
 import { Database } from "../../utils/database";
 
 const command: SlashCommand = {
@@ -39,14 +39,14 @@ const command: SlashCommand = {
 				ephemeral: true,
 			});
 		} else {
-			let state = guildData.raidmode;
+			const state = guildData.raidmode;
 			interaction.reply({
 				content: `Le mode raid est **${state ? "activé" : "désactivé"} !**`,
 				ephemeral: true,
 			});
 		}
 
-		let perm = interaction.guild!.members.me?.permissions.has(
+		const perm = interaction.guild!.members.me?.permissions.has(
 			PermissionFlagsBits.KickMembers
 		);
 		if (!perm) {

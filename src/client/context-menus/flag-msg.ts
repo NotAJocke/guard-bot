@@ -3,7 +3,7 @@ import {
 	ApplicationCommandType,
 	MessageContextMenuCommandInteraction,
 } from "discord.js";
-import { ContextMenu } from "../models/context-menu";
+import { type ContextMenu } from "../models/context-menu";
 
 const contextMenu: ContextMenu = {
 	data: new ContextMenuCommandBuilder()

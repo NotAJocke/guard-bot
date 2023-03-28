@@ -1,45 +1,56 @@
-import { Interaction } from "discord.js";
-import { Client } from "../models/client";
-import { Event } from "../models/event";
+import { type Interaction } from "discord.js";
+import { type Client } from "../models/client";
+import { type Event } from "../models/event";
 
 export const event: Event = {
 	async exec(client: Client, interaction: Interaction) {
 		if (interaction.isChatInputCommand()) {
-			let commandName = interaction.commandName;
-			let command = client
+			const commandName = interaction.commandName;
+			const command = client
 				.getSlashCommands()
 				.find((cmd) => cmd.data.name == commandName);
-			if (command) {
+			if (command != null) {
 				command.exec(interaction);
 			}
 		} else if (interaction.isUserContextMenuCommand()) {
-			let commandName = interaction.commandName;
-			let command = client
+			const commandName = interaction.commandName;
+			const command = client
 				.getContextMenus()
 				.find((cmd) => cmd.data.name == commandName);
-			if (command) {
+			if (command != null) {
 				command.exec(interaction);
 			}
 		} else if (interaction.isButton()) {
-			let interactionData = interaction.customId.split("_");
-			let commandName = interactionData[0];
-			let buttonId = interactionData[1];
+			const interactionData = interaction.customId.split("_");
+			const commandName = interactionData[0];
+			const buttonId = interactionData[1];
 
-			let command = client
+			const command = client
 				.getSlashCommands()
 				.find((cmd) => cmd.data.name == commandName);
-			if (command && command.execButtons) {
+			if (command != null && command.execButtons != null) {
 				command.execButtons(interaction, buttonId, client);
 			}
 		} else if (interaction.isContextMenuCommand()) {
-			let commandName = interaction.commandName;
+			const commandName = interaction.commandName;
 
-			let command = client
+			const command = client
 				.getContextMenus()
 				.find((cmd) => cmd.data.name == commandName);
 
-			if (command) {
+			if (command != null) {
 				command.exec(interaction);
+			}
+		} else if (interaction.isModalSubmit()) {
+			const interactionData = interaction.customId.split("_");
+			const commandName = interactionData[0];
+			const modalId = interactionData[1];
+
+			const command = client
+				.getSlashCommands()
+				.find((cmd) => cmd.data.name == commandName);
+			if (command != null && command.execModals != null) {
+				command.execModals(interaction, modalId, client);
 			}
 		}
 	},

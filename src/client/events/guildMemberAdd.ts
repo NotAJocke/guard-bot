@@ -1,11 +1,11 @@
 import {
 	ChannelType,
 	EmbedBuilder,
-	GuildMember,
+	type GuildMember,
 	PermissionFlagsBits,
 } from "discord.js";
-import { Client } from "../models/client";
-import { Event } from "../models/Event";
+import { type Client } from "../models/client";
+import { type Event } from "../models/Event";
 import { Database } from "../utils/database";
 
 export const event: Event = {
@@ -13,7 +13,7 @@ export const event: Event = {
 		const guildData = await Database.getOrCreateGuild(member.guild.id);
 
 		if (guildData.raidmode) {
-			let perm = member.guild.members.me?.permissions.has(
+			const perm = member.guild.members.me?.permissions.has(
 				PermissionFlagsBits.KickMembers
 			);
 			if (!perm) {
@@ -22,10 +22,12 @@ export const event: Event = {
 
 			member.user
 				.send(
-					`Le serveur est momentanément injoignable, veuillez réessayer plus tard.`
+					"Le serveur est momentanément injoignable, veuillez réessayer plus tard."
 				)
 				.catch((_) => {});
-			member.kick("Raidmode activated.").catch((err) => warnLogs(err.message));
+			member.kick("Raidmode activated.").catch((err) => {
+				warnLogs(err.message);
+			});
 		}
 
 		function warnLogs(message: string) {
@@ -33,7 +35,7 @@ export const event: Event = {
 				client.getConfig().loggingChannels.ban.id
 			);
 
-			if (logChannel && logChannel.type == ChannelType.GuildText) {
+			if (logChannel != null && logChannel.type == ChannelType.GuildText) {
 				logChannel.send({
 					embeds: [
 						new EmbedBuilder()

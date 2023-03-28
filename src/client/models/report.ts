@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildMember, TextChannel } from "discord.js";
+import { EmbedBuilder, type GuildMember, type TextChannel } from "discord.js";
 
 export class Report {
 	public author: GuildMember;

@@ -22,10 +22,10 @@ async function main(): Promise<void> {
 		contextMenus: true,
 	});
 
-	if(process.env.PRODUCTION == "TRUE") {
+	if (process.env.PRODUCTION == "TRUE") {
 		await client.login(process.env.PROD_CLIENT_TOKEN);
 	} else {
-		await client.login(process.env.CLIENT_TOKEN)
+		await client.login(process.env.CLIENT_TOKEN);
 	}
 }
 

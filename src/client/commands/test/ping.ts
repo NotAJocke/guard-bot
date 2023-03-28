@@ -1,9 +1,9 @@
 import {
 	EmbedBuilder,
-	ChatInputCommandInteraction,
+	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../models/slash-commands";
+import { type SlashCommand } from "../../models/slash-commands";
 
 const slashCommand: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -11,7 +11,7 @@ const slashCommand: SlashCommand = {
 		.setDescription("Developer data"),
 
 	async exec(interaction: ChatInputCommandInteraction) {
-		let embed = new EmbedBuilder()
+		const embed = new EmbedBuilder()
 			.setAuthor({
 				name: interaction.client.user.username,
 				iconURL: interaction.client.user.displayAvatarURL(),

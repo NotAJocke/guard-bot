@@ -1,11 +1,11 @@
 import {
-	ChatInputCommandInteraction,
-	ColorResolvable,
+	type ChatInputCommandInteraction,
+	type ColorResolvable,
 	EmbedBuilder,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../models/slash-commands";
+import { type SlashCommand } from "../../models/slash-commands";
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -73,7 +73,7 @@ const command: SlashCommand = {
 		const descriptionOption = interaction.options.getString("description")!;
 
 		if (colorOption && hexColorOption) {
-			return interaction.reply({
+			return await interaction.reply({
 				content: "Merci d'utiliser un seul type de couleur.",
 				ephemeral: true,
 			});
@@ -85,7 +85,7 @@ const command: SlashCommand = {
 		if (colorOption) embed.setColor(colorOption as ColorResolvable);
 		if (hexColorOption) embed.setColor(hexColorOption as ColorResolvable);
 
-		if (channelOption) {
+		if (channelOption != null) {
 			const channel = interaction.guild!.channels.cache.get(channelOption.id);
 			if (channel?.isTextBased()) {
 				channel.send({

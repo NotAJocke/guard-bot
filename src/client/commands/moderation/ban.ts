@@ -1,11 +1,11 @@
 import {
-	ChatInputCommandInteraction,
+	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	PermissionFlagsBits,
-	GuildMember,
+	type GuildMember,
 	TextChannel,
 } from "discord.js";
-import { SlashCommand } from "../../models/slash-commands";
+import { type SlashCommand } from "../../models/slash-commands";
 import { Report } from "../../models/report";
 import ms from "ms";
 import { Database } from "../../utils/database";
@@ -47,16 +47,16 @@ const command: SlashCommand = {
 
 		const member = interaction.guild!.members.cache.get(memberOption.id);
 
-		if (!member) {
-			return interaction.reply({
+		if (member == null) {
+			return await interaction.reply({
 				content: "Malheureusement je ne trouve pas cet utilisateur.",
 				ephemeral: true,
 			});
 		}
 
 		try {
-			let clientMember = interaction.client.guilds.cache.get(member.guild.id);
-			let power = clientMember!.roles.highest.comparePositionTo(
+			const clientMember = interaction.client.guilds.cache.get(member.guild.id);
+			const power = clientMember!.roles.highest.comparePositionTo(
 				member.roles.highest
 			);
 
@@ -69,19 +69,31 @@ const command: SlashCommand = {
 				deleteMessageSeconds: 7,
 			});
 
-			if(timeOption) {
-				await Database.tempBanMember(member.id, member.guild.id, ms(timeOption), interaction.member!.user.username, reasonOption)
+			if (timeOption) {
+				await Database.tempBanMember(
+					member.id,
+					member.guild.id,
+					ms(timeOption),
+					interaction.member!.user.username,
+					reasonOption
+				);
 			}
 
-			if (channelOption && channelOption instanceof TextChannel) {
-				let fetch = await channelOption.messages.fetch();
-				let messages = fetch
+			if (channelOption != null && channelOption instanceof TextChannel) {
+				const fetch = await channelOption.messages.fetch();
+				const messages = fetch
 					.filter((m) => m.author.id === member.id)
 					.first(30)
 					.reverse()
 					.map((m) => m.content);
-				
-				await Database.banMemberWithData(member.id, member.guild.id, interaction.member!.user.username, reasonOption, messages)
+
+				await Database.banMemberWithData(
+					member.id,
+					member.guild.id,
+					interaction.member!.user.username,
+					reasonOption,
+					messages
+				);
 			}
 
 			interaction.reply({
@@ -96,14 +108,14 @@ const command: SlashCommand = {
         **${member.user.tag}** (${member.id}) a été banni du serveur.
 
         **Raison:** ${reasonOption}
-        **Temps:** ${timeOption ? timeOption : "Permanent"}
-        **Conversation sauvegardée:** ${channelOption ? "Oui" : "Non"}
+        **Temps:** ${timeOption || "Permanent"}
+        **Conversation sauvegardée:** ${channelOption != null ? "Oui" : "Non"}
         `,
 				color: (<GuildMember>interaction.member).roles.highest.color,
 				thumbnail: member.user.displayAvatarURL(),
 			}).sendToChannel(interaction.channel as TextChannel);
 		} catch (err: any) {
-			console.log(err)
+			console.log(err);
 			interaction.reply({
 				content: `Je ne peux pas bannir ce membre ${
 					err.message.startsWith("PermissionsIssue") ? "(Permissions)." : ""

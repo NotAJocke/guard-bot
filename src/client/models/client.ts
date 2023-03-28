@@ -2,17 +2,18 @@ import { Client as DSClient, REST, Routes } from "discord.js";
 import { readdirSync } from "fs";
 import { join } from "path";
 
-import Config from "./config";
+import type Config from "./config";
 import devConfig from "../environments/environment";
 import prodConfig from "../environments/environment.prod";
-import { ContextMenu } from "./context-menu";
-import { SlashCommand } from "./slash-commands";
+import { type ContextMenu } from "./context-menu";
+import { type SlashCommand } from "./slash-commands";
 
 export class Client extends DSClient {
-	private config: Config =
+	private readonly config: Config =
 		process.env.PRODUCTION == "TRUE" ? prodConfig : devConfig;
-	private slashCommands: SlashCommand[] = [];
-	private contextMenus: ContextMenu[] = [];
+
+	private readonly slashCommands: SlashCommand[] = [];
+	private readonly contextMenus: ContextMenu[] = [];
 
 	constructor() {
 		super({
@@ -36,11 +37,11 @@ export class Client extends DSClient {
 	}
 
 	public async loadEvents() {
-		let files = readdirSync(join(__dirname, "..", "events"));
-		for (let file of files) {
-			let event = require(join(__dirname, "..", "events", file));
+		const files = readdirSync(join(__dirname, "..", "events"));
+		for (const file of files) {
+			const event = require(join(__dirname, "..", "events", file));
 			if (event.default.settings.enabled) {
-				let eventName = file.split(".")[0];
+				const eventName = file.split(".")[0];
 				this.on(eventName, (...args) => event.default.exec(this, ...args));
 				console.log(`Load Event: ${eventName}`);
 			}
@@ -49,12 +50,18 @@ export class Client extends DSClient {
 	}
 
 	public async loadSlashCommands() {
-		let subfolders = readdirSync(join(__dirname, "..", "commands"));
-		for (let folder of subfolders) {
-			let files = readdirSync(join(__dirname, "..", "commands", folder));
-			for (let file of files) {
-				let command = require(join(__dirname, "..", "commands", folder, file));
-				let commandName = file.split(".")[0];
+		const subfolders = readdirSync(join(__dirname, "..", "commands"));
+		for (const folder of subfolders) {
+			const files = readdirSync(join(__dirname, "..", "commands", folder));
+			for (const file of files) {
+				const command = require(join(
+					__dirname,
+					"..",
+					"commands",
+					folder,
+					file
+				));
+				const commandName = file.split(".")[0];
 				if (command.default.settings.enabled) {
 					this.slashCommands.push(command.default);
 					console.log(`Load Command: ${commandName}`);
@@ -65,10 +72,10 @@ export class Client extends DSClient {
 	}
 
 	public async loadContextMenus() {
-		let files = readdirSync(join(__dirname, "..", "context-menus"));
-		for (let file of files) {
-			let command = require(join(__dirname, "..", "context-menus", file));
-			let commandName = file.split(".")[0];
+		const files = readdirSync(join(__dirname, "..", "context-menus"));
+		for (const file of files) {
+			const command = require(join(__dirname, "..", "context-menus", file));
+			const commandName = file.split(".")[0];
 			if (command.default.settings.enabled) {
 				this.contextMenus.push(command.default);
 				console.log(`Load Menu: ${commandName}`);
@@ -80,7 +87,7 @@ export class Client extends DSClient {
 	private async getSynchronizableInteractions(
 		syncInteractions: SynchronizableInteractions
 	): Promise<any[]> {
-		let data = [];
+		const data = [];
 		if (syncInteractions.contextMenus) {
 			if (this.contextMenus.length === 0) {
 				console.log("No context menus loaded");
@@ -106,11 +113,14 @@ export class Client extends DSClient {
 		guildId: string,
 		syncInteractions: SynchronizableInteractions
 	) {
-		let data = await this.getSynchronizableInteractions(syncInteractions);
-		if (data.length <= 0) return console.log("No data to synchronise");
-		let rest = new REST({ version: "10" });
+		const data = await this.getSynchronizableInteractions(syncInteractions);
+		if (data.length <= 0) {
+			console.log("No data to synchronise");
+			return;
+		}
+		const rest = new REST({ version: "10" });
 
-		if(process.env.PRODUCTION == "TRUE") {
+		if (process.env.PRODUCTION == "TRUE") {
 			rest.setToken(process.env.PROD_CLIENT_TOKEN!);
 		} else {
 			rest.setToken(process.env.CLIENT_TOKEN!);
@@ -118,7 +128,9 @@ export class Client extends DSClient {
 		try {
 			rest.put(
 				Routes.applicationGuildCommands(
-					process.env.PRODUCTION == "TRUE" ? process.env.PROD_CLIENT_ID! : process.env.CLIENT_ID!,
+					process.env.PRODUCTION == "TRUE"
+						? process.env.PROD_CLIENT_ID!
+						: process.env.CLIENT_ID!,
 					guildId
 				),
 				{ body: data }
@@ -149,7 +161,7 @@ export class Client extends DSClient {
 	 */
 	public async unSyncInteractions() {
 		await this.application?.commands.set([]);
-		for (let guild of this.guilds.cache.values()) {
+		for (const guild of this.guilds.cache.values()) {
 			await guild.commands.set([]);
 		}
 	}

@@ -1,4 +1,7 @@
-import { ButtonInteraction, ContextMenuCommandInteraction } from "discord.js";
+import {
+	type ButtonInteraction,
+	type ContextMenuCommandInteraction,
+} from "discord.js";
 
 export interface ContextMenu {
 	data: any;

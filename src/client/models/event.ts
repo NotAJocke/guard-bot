@@ -1,7 +1,7 @@
-import { Client } from "./client";
+import { type Client } from "./client";
 
 export interface Event {
-	exec(client: Client, ...args: any[]): void;
+	exec: (client: Client, ...args: any[]) => void;
 
 	settings: {
 		enabled: boolean;

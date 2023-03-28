@@ -1,16 +1,26 @@
-import { ButtonInteraction, ChatInputCommandInteraction } from "discord.js";
-import { Client } from "./client";
+import {
+	type ButtonInteraction,
+	type ChatInputCommandInteraction,
+	type ModalSubmitInteraction,
+} from "discord.js";
+import { type Client } from "./client";
 
 export interface SlashCommand {
 	data: any;
 
-	exec(interaction: ChatInputCommandInteraction): void;
+	exec: (interaction: ChatInputCommandInteraction) => void;
 
-	execButtons?(
+	execButtons?: (
 		interaction: ButtonInteraction,
 		buttonId: string,
 		client: Client
-	): void;
+	) => void;
+
+	execModals?: (
+		interaction: ModalSubmitInteraction,
+		modalId: string,
+		client: Client
+	) => void;
 
 	settings: {
 		enabled: boolean;

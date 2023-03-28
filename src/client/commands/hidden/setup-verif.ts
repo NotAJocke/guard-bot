@@ -2,13 +2,13 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ButtonStyle,
-	ChatInputCommandInteraction,
+	type ChatInputCommandInteraction,
 	EmbedBuilder,
-	GuildMember,
+	type GuildMember,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../models/slash-commands";
+import { type SlashCommand } from "../../models/slash-commands";
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -38,7 +38,7 @@ const command: SlashCommand = {
 		);
 
 		if (targetChannel?.isTextBased()) {
-			let embed = new EmbedBuilder()
+			const embed = new EmbedBuilder()
 				.setTitle("Clique ici pour avoir l'accès au serveur")
 				.setColor("Green");
 			targetChannel.send({ embeds: [embed], components: [actionRow] });
@@ -49,9 +49,9 @@ const command: SlashCommand = {
 	async execButtons(interaction, buttonId, client) {
 		switch (buttonId) {
 			case "verif-btn":
-				let roleId = client.getConfig().communityRoleVerified;
-				let role = interaction.guild!.roles.cache.get(roleId);
-				if (role) {
+				const roleId = client.getConfig().communityRoleVerified;
+				const role = interaction.guild!.roles.cache.get(roleId);
+				if (role != null) {
 					if (!(<GuildMember>interaction.member!).roles.cache.has(roleId)) {
 						(<GuildMember>interaction.member!).roles.add(role);
 						interaction.reply({

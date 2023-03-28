@@ -1,10 +1,10 @@
 import {
-	ChatInputCommandInteraction,
-	GuildMember,
+	type ChatInputCommandInteraction,
+	type GuildMember,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
 } from "discord.js";
-import { SlashCommand } from "../../models/slash-commands";
+import { type SlashCommand } from "../../models/slash-commands";
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -23,7 +23,7 @@ const command: SlashCommand = {
 		const memberOption = interaction.options.getMember(
 			"membre"
 		)! as GuildMember;
-		let member = interaction.guild?.members.cache.get(memberOption.id);
+		const member = interaction.guild?.members.cache.get(memberOption.id);
 
 		try {
 			member?.voice.disconnect();
@@ -33,7 +33,7 @@ const command: SlashCommand = {
 			});
 		} catch {
 			interaction.reply({
-				content: `Une erreur est survenue`,
+				content: "Une erreur est survenue",
 				ephemeral: true,
 			});
 		}
