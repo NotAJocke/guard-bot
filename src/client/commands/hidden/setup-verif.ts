@@ -49,7 +49,7 @@ const command: SlashCommand = {
 	async execButtons(interaction, buttonId, client) {
 		switch (buttonId) {
 			case "verif-btn":
-				const roleId = client.getConfig().communityRoleVerified;
+				const roleId = client.getConfig().roles.communityRoleVerified;
 				const role = interaction.guild!.roles.cache.get(roleId);
 				if (role != null) {
 					if (!(<GuildMember>interaction.member!).roles.cache.has(roleId)) {

@@ -9,8 +9,12 @@ const config: Config = {
 			id: "",
 		},
 	},
-	communityRoleVerified: "1023342162882068480",
 	guildId: "1022906024816017510",
+	roles: {
+		communityRoleVerified: "1023342162882068480",
+		moderatorId: "",
+		testingModId: "",
+	},
 };
 
 export default config;

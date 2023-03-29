@@ -9,7 +9,11 @@ interface Config {
 			id: string;
 		};
 	};
-	communityRoleVerified: string;
+	roles: {
+		communityRoleVerified: string;
+		moderatorId: string;
+		testingModId: string;
+	};
 }
 
 export default Config;

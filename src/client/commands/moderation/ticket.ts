@@ -132,7 +132,7 @@ const command: SlashCommand = {
 							.setLabel("Sujet du ticket")
 							.setPlaceholder("Décrivez votre problème en quelques mots.")
 							.setMinLength(3)
-							.setMaxLength(100)
+							.setMaxLength(50)
 							.setStyle(TextInputStyle.Short)
 							.setRequired(true)
 					);
@@ -142,7 +142,7 @@ const command: SlashCommand = {
 							.setCustomId("description")
 							.setLabel("Description du ticket")
 							.setPlaceholder("Donnez nous plus de détails sur votre problème.")
-							.setMinLength(3)
+							.setMinLength(15)
 							.setMaxLength(1000)
 							.setStyle(TextInputStyle.Paragraph)
 							.setRequired(true)
@@ -195,7 +195,7 @@ const command: SlashCommand = {
 		}
 	},
 
-	async execModals(interaction, modalId) {
+	async execModals(interaction, modalId, client) {
 		switch (modalId) {
 			case "form":
 				const ticketNumber = await Database.increaseTicketCount(
@@ -205,6 +205,20 @@ const command: SlashCommand = {
 					name: `ticket-${ticketNumber}`,
 					type: ChannelType.GuildText,
 					parent: await Database.getTicketCategory(interaction.guildId!),
+					permissionOverwrites: [
+						{
+							id: interaction.guild!.roles.everyone.id,
+							deny: [PermissionFlagsBits.ViewChannel],
+						},
+						{
+							id: client.getConfig().roles.moderatorId,
+							allow: [PermissionFlagsBits.ViewChannel],
+						},
+						{
+							id: client.getConfig().roles.testingModId,
+							allow: [PermissionFlagsBits.ViewChannel],
+						},
+					],
 				});
 				interaction.reply({
 					content: `Ticket créé avec succès. ( ${channel} )`,

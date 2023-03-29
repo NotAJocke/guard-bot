@@ -9,7 +9,13 @@ export const readyEvent: Event = {
 			console.log("Prod mode");
 		}
 
-		checkUnbans(client);
+		if (
+			client.getSlashCommands().find((c) => c.data.name == "ban")?.settings
+				.enabled
+		) {
+			console.log("Unban system ready");
+			checkUnbans(client);
+		}
 	},
 
 	settings: {
