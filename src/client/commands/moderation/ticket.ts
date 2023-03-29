@@ -19,7 +19,7 @@ import { Database } from "../../utils/database";
 
 const command: SlashCommand = {
 	settings: {
-		enabled: true,
+		enabled: false,
 	},
 
 	data: new SlashCommandBuilder()
