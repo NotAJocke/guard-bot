@@ -5,7 +5,7 @@ import {
 	PermissionFlagsBits,
 } from "discord.js";
 import { type Client } from "../models/client";
-import { type Event } from "../models/Event";
+import { type Event } from "../models/event";
 import { Database } from "../utils/database";
 
 export const event: Event = {
