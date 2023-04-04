@@ -277,29 +277,6 @@ export class Database {
 
 		return isticket;
 	}
-
-	public static async warnMember(
-		guildId: string,
-		memberId: string,
-		moderatorId: string,
-		reason: string
-	) {
-		const member = await this.getOrCreateMember(memberId, guildId);
-		await prisma.member.update({
-			where: {
-				modelId: member.modelId,
-			},
-			data: {
-				warns: {
-					create: {
-						reason,
-						moderator: moderatorId,
-						date: Date.now(),
-					},
-				},
-			},
-		});
-	}
 }
 
 function formatTicketNumber(number: number) {
