@@ -13,13 +13,14 @@ import {
 	type TextChannel,
 	TextInputBuilder,
 	TextInputStyle,
+	GuildMember,
 } from "discord.js";
 import { type SlashCommand } from "../../models/slash-commands";
 import { Database } from "../../utils/database";
 
 const command: SlashCommand = {
 	settings: {
-		enabled: false,
+		enabled: true,
 	},
 
 	data: new SlashCommandBuilder()
@@ -46,6 +47,17 @@ const command: SlashCommand = {
 		})
 		.addSubcommand((subcommand) => {
 			return subcommand.setName("close").setDescription("Fermer un ticket");
+		})
+		.addSubcommand((subcommand) => {
+			return subcommand
+				.setName("add")
+				.setDescription("Ajouter une personne au ticket")
+				.addUserOption((option) => {
+					return option
+						.setName("membre")
+						.setDescription("La personne à rajouter")
+						.setRequired(true);
+				});
 		})
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
@@ -101,6 +113,22 @@ const command: SlashCommand = {
 			} else {
 				interaction.reply({
 					content: "Ce salon n'est pas un ticket",
+					ephemeral: true,
+				});
+			}
+		} else if (interaction.options.getSubcommand() == "add") {
+			if (
+				await Database.isTicket(interaction.guildId!, interaction.channelId)
+			) {
+				const memberOption = interaction.options.getMember(
+					"membre"
+				) as GuildMember;
+				const channel = interaction.channel as TextChannel;
+				channel.permissionOverwrites.create(memberOption, {
+					ViewChannel: true,
+				});
+				interaction.reply({
+					content: `${memberOption} a été ajouté au ticket.`,
 					ephemeral: true,
 				});
 			}
