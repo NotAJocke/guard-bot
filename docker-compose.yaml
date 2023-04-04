@@ -5,6 +5,7 @@ services:
       - "5432:5432"
     volumes:
       - ./data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -21,8 +22,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Bot
-    links:
-      - db
     depends_on:
       db:
         condition: service_healthy
