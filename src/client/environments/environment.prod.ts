@@ -12,8 +12,8 @@ const config: Config = {
 	guildId: "1022906024816017510",
 	roles: {
 		communityRoleVerified: "1023342162882068480",
-		moderatorId: "",
-		testingModId: "",
+		moderatorId: "1023324018754994269",
+		testingModId: "1023324018754994269",
 	},
 };
 
