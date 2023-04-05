@@ -277,6 +277,32 @@ export class Database {
 
 		return isticket;
 	}
+
+	public static async updateVerifiedRole(guildId: string, roleId: string) {
+		const guild = await this.getOrCreateGuild(guildId);
+
+		await prisma.guild.update({
+			where: {
+				modelId: guild.modelId,
+			},
+			data: {
+				verifiedRoleId: roleId,
+			},
+		});
+	}
+
+	public static async getVerifiedRole(guildId: string) {
+		const req = await prisma.guild.findFirst({
+			where: {
+				id: guildId,
+			},
+			select: {
+				verifiedRoleId: true,
+			},
+		});
+
+		return req?.verifiedRoleId;
+	}
 }
 
 function formatTicketNumber(number: number) {

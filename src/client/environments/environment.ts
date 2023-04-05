@@ -11,7 +11,6 @@ const config: Config = {
 		},
 	},
 	roles: {
-		communityRoleVerified: "1062091468401021011",
 		moderatorId: "1090267420222050344",
 		testingModId: "1090267494633197649",
 	},
