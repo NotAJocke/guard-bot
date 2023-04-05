@@ -10,7 +10,6 @@ interface Config {
 		};
 	};
 	roles: {
-		communityRoleVerified: string;
 		moderatorId: string;
 		testingModId: string;
 	};

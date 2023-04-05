@@ -18,6 +18,7 @@ model Guild {
   ticketCategoryId String?
   ticketCount      Int      @default(0000)
   tickets          Ticket[]
+  verifiedRoleId   String?
 }
 
 model Member {

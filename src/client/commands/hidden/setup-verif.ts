@@ -7,8 +7,10 @@ import {
 	type GuildMember,
 	PermissionFlagsBits,
 	SlashCommandBuilder,
+	Role,
 } from "discord.js";
 import { type SlashCommand } from "../../models/slash-commands";
+import { Database } from "../../utils/database";
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -17,9 +19,13 @@ const command: SlashCommand = {
 		.addChannelOption((option) => {
 			return option
 				.setName("channel")
-				.setDescription(
-					"The channel where the verification message will be sent"
-				)
+				.setDescription("Le salon où sera envoyé le bouton de vérification")
+				.setRequired(true);
+		})
+		.addRoleOption((option) => {
+			return option
+				.setName("role")
+				.setDescription("Le role a attribuer aux nouveaux membres")
 				.setRequired(true);
 		})
 		.setDMPermission(false)
@@ -27,6 +33,7 @@ const command: SlashCommand = {
 
 	async exec(interaction: ChatInputCommandInteraction) {
 		const channel = interaction.options.getChannel("channel")!;
+		const role = interaction.options.getRole("role") as Role;
 
 		const targetChannel = interaction.guild?.channels.cache.get(channel.id);
 		const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -43,27 +50,42 @@ const command: SlashCommand = {
 				.setColor("Green");
 			targetChannel.send({ embeds: [embed], components: [actionRow] });
 			interaction.reply({ content: "Envoyé", ephemeral: true });
+
+			await Database.updateVerifiedRole(interaction.guildId!, role.id);
 		}
 	},
 
 	async execButtons(interaction, buttonId, client) {
 		switch (buttonId) {
 			case "verif-btn":
-				const roleId = client.getConfig().roles.communityRoleVerified;
-				const role = interaction.guild!.roles.cache.get(roleId);
-				if (role != null) {
-					if (!(<GuildMember>interaction.member!).roles.cache.has(roleId)) {
-						(<GuildMember>interaction.member!).roles.add(role);
-						interaction.reply({
-							content: "Vous avez été verifié",
-							ephemeral: true,
-						});
+				////const roleId = client.getConfig().roles.communityRoleVerified;
+				const roleId = await Database.getVerifiedRole(interaction.guildId!);
+				if (roleId) {
+					const role = interaction.guild!.roles.cache.get(roleId);
+					if (role != null) {
+						if (!(<GuildMember>interaction.member!).roles.cache.has(roleId)) {
+							(<GuildMember>interaction.member!).roles.add(role);
+							interaction.reply({
+								content: "Vous avez été verifié",
+								ephemeral: true,
+							});
+						} else {
+							interaction.reply({
+								content: "Vous avez déjà accepté le règlement",
+								ephemeral: true,
+							});
+						}
 					} else {
 						interaction.reply({
-							content: "Vous avez déjà accepté le règlement",
-							ephemeral: true,
+							content:
+								"Une erreur est survenue, je ne trouve pas le rôle. Merci de signaler ce problème à JockeRider199#2627.",
 						});
 					}
+				} else {
+					interaction.reply({
+						content:
+							"Une erreur est survenue, je ne trouve pas le rôle. Merci de signaler ce problème à JockeRider199#2627.",
+					});
 				}
 
 				break;
