@@ -15,13 +15,13 @@ model Guild {
   raidmode       Boolean        @default(false)
   bans           Ban[]
   warns          Warn[]
-  ticketConfig        TicketsConfig?
+  ticketConfig   TicketsConfig?
   verifiedRoleId String?
-  tickets Ticket[]
+  tickets        Ticket[]
 }
 
 model TicketsConfig {
-  modelId               String   @id @default(uuid())
+  modelId          String   @id @default(uuid())
   guild            Guild    @relation(fields: [guildId], references: [id])
   guildId          String   @unique
   count            Int      @default(0000)
@@ -69,6 +69,6 @@ model Ticket {
   ownerId         String
   ticketsConfig   TicketsConfig? @relation(fields: [ticketsConfigId], references: [modelId])
   ticketsConfigId String?
-  guild Guild @relation(fields: [guildId], references: [id])
-  guildId String
+  guild           Guild          @relation(fields: [guildId], references: [id])
+  guildId         String
 }
