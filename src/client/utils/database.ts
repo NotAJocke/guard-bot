@@ -27,6 +27,38 @@ export class Database {
 		return data;
 	}
 
+	public static async createTicketConfig(
+		guildId: string,
+		modRoleId: string,
+		ticketCategoryId: string
+	) {
+		const guild = await this.getOrCreateGuild(guildId);
+
+		const existing = await prisma.ticketsConfig.findFirst({
+			where: { guildId: guild.id },
+		});
+
+		if (existing == null) {
+			await prisma.ticketsConfig.create({
+				data: {
+					modRoleId,
+					ticketCategoryId,
+					guildId,
+				},
+			});
+		} else {
+			await prisma.ticketsConfig.update({
+				where: {
+					modelId: existing.modelId,
+				},
+				data: {
+					modRoleId,
+					ticketCategoryId,
+				},
+			});
+		}
+	}
+
 	public static async getMembersOfGuild(id: string) {
 		const members = await prisma.member.findMany({
 			where: { guildId: id },
@@ -198,23 +230,28 @@ export class Database {
 		return member.internalNote;
 	}
 
-	public static async setTicketCatergory(guildId: string, categoryId: string) {
-		const guild = await this.getOrCreateGuild(guildId);
-
-		await prisma.guild.update({
+	public static async getTicketCategory(guildId: string) {
+		const res = await prisma.ticketsConfig.findFirst({
 			where: {
-				id: guild.id,
+				guildId,
 			},
-			data: {
-				ticketCategoryId: categoryId,
+			select: {
+				ticketCategoryId: true,
 			},
 		});
+
+		return res?.ticketCategoryId;
 	}
 
-	public static async getTicketCategory(guildId: string) {
-		const guild = await this.getOrCreateGuild(guildId);
+	public static async getTicketModRoleId(guildId: string) {
+		const res = await prisma.ticketsConfig.findFirst({
+			where: {
+				guildId,
+			},
+			select: { modRoleId: true },
+		});
 
-		return guild.ticketCategoryId;
+		return res!.modRoleId;
 	}
 
 	public static async createTicket(
@@ -222,11 +259,17 @@ export class Database {
 		channelId: string,
 		ownerId: string
 	) {
+		let config = await prisma.ticketsConfig.findFirst({
+			where: {
+				guildId,
+			},
+		});
 		await prisma.ticket.create({
 			data: {
-				guildId,
 				channelId,
 				ownerId,
+				ticketsConfigId: config?.modelId,
+				guildId,
 			},
 		});
 	}
@@ -234,18 +277,18 @@ export class Database {
 	public static async increaseTicketCount(guildId: string) {
 		const guild = await this.getOrCreateGuild(guildId);
 
-		await prisma.guild.update({
+		const config = await prisma.ticketsConfig.update({
 			where: {
-				id: guild.id,
+				guildId: guild.id,
 			},
 			data: {
-				ticketCount: {
+				count: {
 					increment: 1,
 				},
 			},
 		});
 
-		return formatTicketNumber(guild.ticketCount + 1);
+		return formatTicketNumber(config.count + 1);
 	}
 
 	public static async removeTicket(guildId: string, channelId: string) {
