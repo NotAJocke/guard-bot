@@ -7,7 +7,7 @@
 		"bot:run": "node src/client/index.js",
 		"bot:dev": "ts-node src/client/index.ts",
 		"build": "tsc && pnpm _copy-files && pnpm db:prod",
-		"_copy-files": "cp .env ./dist && cp -r prisma dist",
+		"_copy-files": "cp -r prisma dist",
 		"clean": "rm -rf dist",
 		"db:prod": "node ./scripts/prisma.js",
 		"deploy": "pnpm build && pnpm run db:prod && docker-compose build && docker-compose up -d",

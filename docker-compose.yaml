@@ -26,3 +26,5 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    env_file:
+      - .env
