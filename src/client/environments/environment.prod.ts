@@ -10,6 +10,7 @@ const config: Config = {
 		},
 	},
 	guildId: "1022906024816017510",
+	embedsColor: "#00B700",
 };
 
 export default config;

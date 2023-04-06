@@ -10,6 +10,7 @@ const config: Config = {
 			id: "1068174411590541322",
 		},
 	},
+	embedsColor: "#00B700",
 };
 
 export default config;
