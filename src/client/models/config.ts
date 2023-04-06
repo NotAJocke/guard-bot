@@ -9,10 +9,6 @@ interface Config {
 			id: string;
 		};
 	};
-	roles: {
-		moderatorId: string;
-		testingModId: string;
-	};
 }
 
 export default Config;

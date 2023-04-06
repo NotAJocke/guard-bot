@@ -10,10 +10,6 @@ const config: Config = {
 			id: "1068174411590541322",
 		},
 	},
-	roles: {
-		moderatorId: "1090267420222050344",
-		testingModId: "1090267494633197649",
-	},
 };
 
 export default config;

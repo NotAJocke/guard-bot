@@ -14,13 +14,14 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 	GuildMember,
+	Role,
 } from "discord.js";
 import { type SlashCommand } from "../../models/slash-commands";
 import { Database } from "../../utils/database";
 
 const command: SlashCommand = {
 	settings: {
-		enabled: false,
+		enabled: true,
 	},
 
 	data: new SlashCommandBuilder()
@@ -41,8 +42,14 @@ const command: SlashCommand = {
 					return option
 						.setName("channel")
 						.setDescription("Channel où envoyer le message")
-						.setRequired(false)
+						.setRequired(true)
 						.addChannelTypes(ChannelType.GuildText);
+				})
+				.addRoleOption((option) => {
+					return option
+						.setName("role")
+						.setDescription("Le role staff")
+						.setRequired(true);
 				});
 		})
 		.addSubcommand((subcommand) => {
@@ -66,10 +73,11 @@ const command: SlashCommand = {
 		if (interaction.options.getSubcommand() === "setup") {
 			const channelOption = interaction.options.getChannel(
 				"channel"
-			) as TextChannel | null;
+			) as TextChannel;
 			const categoryOption = interaction.options.getChannel(
 				"category"
 			) as CategoryChannel;
+			const roleOption = interaction.options.getRole("role") as Role;
 
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
@@ -85,19 +93,15 @@ const command: SlashCommand = {
 					"Cliquez sur le bouton :envelope_with_arrow: ci-dessous pour créer un ticket."
 				);
 
-			if (channelOption != null) {
-				channelOption.send({ embeds: [embed], components: [row] });
-				interaction.reply({
-					content: `Message envoyé dans ${channelOption}`,
-					ephemeral: true,
-				});
-			} else {
-				interaction.channel?.send({ embeds: [embed], components: [row] });
-				interaction.reply({ content: "Message envoyé", ephemeral: true });
-			}
+			channelOption.send({ embeds: [embed], components: [row] });
+			interaction.reply({
+				content: `Message envoyé dans ${channelOption}`,
+				ephemeral: true,
+			});
 
-			await Database.setTicketCatergory(
+			await Database.createTicketConfig(
 				interaction.guildId!,
+				roleOption.id,
 				categoryOption.id
 			);
 		} else if (interaction.options.getSubcommand() == "close") {
@@ -229,6 +233,9 @@ const command: SlashCommand = {
 				const ticketNumber = await Database.increaseTicketCount(
 					interaction.guildId!
 				);
+				const modRoleId = await Database.getTicketModRoleId(
+					interaction.guildId!
+				);
 				const channel = await interaction.guild!.channels.create({
 					name: `ticket-${ticketNumber}`,
 					type: ChannelType.GuildText,
@@ -239,11 +246,7 @@ const command: SlashCommand = {
 							deny: [PermissionFlagsBits.ViewChannel],
 						},
 						{
-							id: client.getConfig().roles.moderatorId,
-							allow: [PermissionFlagsBits.ViewChannel],
-						},
-						{
-							id: client.getConfig().roles.testingModId,
+							id: modRoleId,
 							allow: [PermissionFlagsBits.ViewChannel],
 						},
 					],

@@ -9,16 +9,25 @@ datasource db {
 }
 
 model Guild {
-  modelId          String   @id @default(uuid())
-  id               String   @unique
-  members          Member[]
-  raidmode         Boolean  @default(false)
-  bans             Ban[]
-  warns            Warn[]
-  ticketCategoryId String?
-  ticketCount      Int      @default(0000)
+  modelId        String         @id @default(uuid())
+  id             String         @unique
+  members        Member[]
+  raidmode       Boolean        @default(false)
+  bans           Ban[]
+  warns          Warn[]
+  ticketConfig        TicketsConfig?
+  verifiedRoleId String?
+  tickets Ticket[]
+}
+
+model TicketsConfig {
+  modelId               String   @id @default(uuid())
+  guild            Guild    @relation(fields: [guildId], references: [id])
+  guildId          String   @unique
+  count            Int      @default(0000)
   tickets          Ticket[]
-  verifiedRoleId   String?
+  modRoleId        String
+  ticketCategoryId String
 }
 
 model Member {
@@ -55,9 +64,11 @@ model Ban {
 }
 
 model Ticket {
-  modelId   String @id @default(uuid())
-  channelId String @unique
-  ownerId   String
-  guild     Guild  @relation(fields: [guildId], references: [id])
-  guildId   String
+  modelId         String         @id @default(uuid())
+  channelId       String         @unique
+  ownerId         String
+  ticketsConfig   TicketsConfig? @relation(fields: [ticketsConfigId], references: [modelId])
+  ticketsConfigId String?
+  guild Guild @relation(fields: [guildId], references: [id])
+  guildId String
 }
