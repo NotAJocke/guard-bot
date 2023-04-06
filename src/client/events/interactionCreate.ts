@@ -10,7 +10,7 @@ export const event: Event = {
 				.getSlashCommands()
 				.find((cmd) => cmd.data.name == commandName);
 			if (command != null) {
-				command.exec(interaction);
+				command.exec(interaction, client);
 			}
 		} else if (interaction.isUserContextMenuCommand()) {
 			const commandName = interaction.commandName;

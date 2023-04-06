@@ -1,4 +1,4 @@
-import { type GatewayIntentBits } from "discord.js";
+import { ColorResolvable, type GatewayIntentBits } from "discord.js";
 
 interface Config {
 	intents: GatewayIntentBits[];
@@ -9,6 +9,7 @@ interface Config {
 			id: string;
 		};
 	};
+	embedsColor: ColorResolvable;
 }
 
 export default Config;

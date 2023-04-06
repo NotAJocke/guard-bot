@@ -11,6 +11,7 @@ import {
 } from "discord.js";
 import { type SlashCommand } from "../../models/slash-commands";
 import { Database } from "../../utils/database";
+import { Client } from "../../models/client";
 
 const command: SlashCommand = {
 	data: new SlashCommandBuilder()
@@ -31,7 +32,7 @@ const command: SlashCommand = {
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-	async exec(interaction: ChatInputCommandInteraction) {
+	async exec(interaction: ChatInputCommandInteraction, client: Client) {
 		const channel = interaction.options.getChannel("channel")!;
 		const role = interaction.options.getRole("role") as Role;
 
@@ -47,7 +48,7 @@ const command: SlashCommand = {
 		if (targetChannel?.isTextBased()) {
 			const embed = new EmbedBuilder()
 				.setTitle("Clique ici pour avoir l'accès au serveur")
-				.setColor("Green");
+				.setColor(client.getConfig().embedsColor);
 			targetChannel.send({ embeds: [embed], components: [actionRow] });
 			interaction.reply({ content: "Envoyé", ephemeral: true });
 

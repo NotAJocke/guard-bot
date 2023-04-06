@@ -18,6 +18,7 @@ import {
 } from "discord.js";
 import { type SlashCommand } from "../../models/slash-commands";
 import { Database } from "../../utils/database";
+import { Client } from "../../models/client";
 
 const command: SlashCommand = {
 	settings: {
@@ -69,7 +70,7 @@ const command: SlashCommand = {
 		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 
-	async exec(interaction: ChatInputCommandInteraction) {
+	async exec(interaction: ChatInputCommandInteraction, client: Client) {
 		if (interaction.options.getSubcommand() === "setup") {
 			const channelOption = interaction.options.getChannel(
 				"channel"
@@ -88,7 +89,7 @@ const command: SlashCommand = {
 			);
 			const embed = new EmbedBuilder()
 				.setTitle("Pour contacter notre équipe, veuillez créer un ticket.")
-				.setColor("#F7DF28")
+				.setColor(client.getConfig().embedsColor)
 				.setDescription(
 					"Cliquez sur le bouton :envelope_with_arrow: ci-dessous pour créer un ticket."
 				);
@@ -139,7 +140,7 @@ const command: SlashCommand = {
 		}
 	},
 
-	async execButtons(interaction, buttonId) {
+	async execButtons(interaction, buttonId, client) {
 		switch (buttonId) {
 			case "create": {
 				if (
@@ -262,7 +263,7 @@ const command: SlashCommand = {
 				);
 
 				const embed = new EmbedBuilder()
-					.setColor("#F7DF28")
+					.setColor(client.getConfig().embedsColor)
 					.setAuthor({
 						name: interaction.user.tag,
 						iconURL: interaction.user.displayAvatarURL(),

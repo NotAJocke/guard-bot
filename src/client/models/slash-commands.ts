@@ -8,7 +8,7 @@ import { type Client } from "./client";
 export interface SlashCommand {
 	data: any;
 
-	exec: (interaction: ChatInputCommandInteraction) => void;
+	exec: (interaction: ChatInputCommandInteraction, client: Client) => void;
 
 	execButtons?: (
 		interaction: ButtonInteraction,
