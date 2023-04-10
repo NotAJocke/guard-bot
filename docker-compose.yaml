@@ -20,7 +20,7 @@ services:
       retries: 5
 
   bot:
-    image: jockerider199/guard-bot
+    image: jockerider199/guard-bot:0.0.3
     build:
       context: .
       dockerfile: Dockerfile.Bot
