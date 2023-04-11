@@ -9,15 +9,16 @@ datasource db {
 }
 
 model Guild {
-  modelId        String         @id @default(uuid())
-  id             String         @unique
-  members        Member[]
-  raidmode       Boolean        @default(false)
-  bans           Ban[]
-  warns          Warn[]
-  ticketConfig   TicketsConfig?
-  verifiedRoleId String?
-  tickets        Ticket[]
+  modelId           String         @id @default(uuid())
+  id                String         @unique
+  members           Member[]
+  raidmode          Boolean        @default(false)
+  bans              Ban[]
+  warns             Warn[]
+  ticketConfig      TicketsConfig?
+  verifiedRoleId    String?
+  tickets           Ticket[]
+  autoReactChannels AutoReact[]
 }
 
 model TicketsConfig {
@@ -28,6 +29,16 @@ model TicketsConfig {
   tickets          Ticket[]
   modRoleId        String
   ticketCategoryId String
+}
+
+model AutoReact {
+  modelId   String   @id @default(uuid())
+  guild     Guild    @relation(fields: [guildId], references: [id])
+  guildId   String
+  channelId String   @unique
+  emojis    String[]
+
+  @@unique(fields: [guildId, channelId], name: "guildChannel")
 }
 
 model Member {

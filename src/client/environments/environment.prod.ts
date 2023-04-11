@@ -2,7 +2,12 @@ import { GatewayIntentBits } from "discord.js";
 import type Config from "../models/config";
 
 const config: Config = {
-	intents: [GatewayIntentBits.GuildMembers, GatewayIntentBits.Guilds],
+	intents: [
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildMessages,
+	],
 	loggingChannels: {
 		ban: {
 			name: "",
