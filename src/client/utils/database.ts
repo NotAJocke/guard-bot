@@ -346,6 +346,72 @@ export class Database {
 
 		return req?.verifiedRoleId;
 	}
+
+	public static async isAutoReactChannel(
+		guildId: string,
+		channelId: string
+	): Promise<boolean> {
+		await this.getOrCreateGuild(guildId);
+		const req = await prisma.autoReact.findFirst({
+			where: {
+				guildId,
+				channelId,
+			},
+		});
+
+		return req ? true : false;
+	}
+
+	public static async setAutoReactChannel(
+		guildId: string,
+		channelId: string,
+		emojis: string[]
+	) {
+		await this.getOrCreateGuild(guildId);
+		await prisma.autoReact.upsert({
+			where: {
+				guildChannel: {
+					guildId,
+					channelId,
+				},
+			},
+			update: {
+				emojis,
+			},
+			create: {
+				channelId,
+				emojis,
+				guildId,
+			},
+		});
+	}
+
+	public static async getAutoReactEmoji(
+		guildId: string,
+		channelId: string
+	): Promise<string[]> {
+		await this.getOrCreateGuild(guildId);
+		const req = await prisma.autoReact.findFirst({
+			where: { guildId, channelId },
+			select: { emojis: true },
+		});
+
+		return req ? req.emojis : [];
+	}
+
+	public static async deleteAutoReactChannel(
+		guildId: string,
+		channelId: string
+	) {
+		await prisma.autoReact.delete({
+			where: {
+				guildChannel: {
+					guildId,
+					channelId,
+				},
+			},
+		});
+	}
 }
 
 function formatTicketNumber(number: number) {
