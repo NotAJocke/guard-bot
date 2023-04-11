@@ -10,9 +10,9 @@
 		"_copy-files": "cp -r prisma dist",
 		"clean": "rm -rf dist",
 		"db:prod": "node ./scripts/prisma.js",
-		"deploy": "pnpm build && pnpm run db:prod && docker-compose build && docker-compose up -d",
 		"format": "prettier --write ./src/",
-		"husky:prepare": "husky install && husky add .husky/pre-commit \"pnpm lint-staged\npnpm prisma format\""
+		"husky:prepare": "husky install && husky add .husky/pre-commit \"pnpm lint-staged\npnpm prisma format\"",
+		"deploy": "docker buildx build -t jockerider199/guard-bot:0.0.3 --platform linux/amd64,linux/arm64 -f Dockerfile.Bot --push ."
 	},
 	"author": "JockeRider199",
 	"devDependencies": {
