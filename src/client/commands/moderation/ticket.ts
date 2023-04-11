@@ -248,7 +248,19 @@ const command: SlashCommand = {
 						},
 						{
 							id: modRoleId,
-							allow: [PermissionFlagsBits.ViewChannel],
+							allow: [
+								PermissionFlagsBits.ViewChannel,
+								PermissionFlagsBits.SendMessages,
+								PermissionFlagsBits.AttachFiles,
+							],
+						},
+						{
+							id: interaction.member!.user.id,
+							allow: [
+								PermissionFlagsBits.ViewChannel,
+								PermissionFlagsBits.SendMessages,
+								PermissionFlagsBits.AttachFiles,
+							],
 						},
 					],
 				});
