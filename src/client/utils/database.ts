@@ -270,6 +270,7 @@ export class Database {
 				ownerId,
 				ticketsConfigId: config?.modelId,
 				guildId,
+				opened: true,
 			},
 		});
 	}
@@ -299,6 +300,33 @@ export class Database {
 		});
 	}
 
+	public static async closeTicket(guildId: string, channelId: string) {
+		await prisma.ticket.update({
+			where: {
+				channelId,
+			},
+			data: {
+				opened: false,
+			},
+		});
+	}
+
+	public static async openTicket(guildId: string, channelId: string) {
+		const req = await prisma.ticket.update({
+			where: {
+				channelId,
+			},
+			data: {
+				opened: true,
+			},
+			select: {
+				ownerId: true,
+			},
+		});
+
+		return req.ownerId;
+	}
+
 	public static async isAlreadyInTicket(guildId: string, userId: string) {
 		const existing = await prisma.ticket.findFirst({
 			where: {
@@ -307,7 +335,7 @@ export class Database {
 			},
 		});
 
-		return existing != null;
+		return existing?.opened ?? false;
 	}
 
 	public static async isTicket(guildId: string, channelId: string) {
