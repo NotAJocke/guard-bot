@@ -356,6 +356,7 @@ const command: SlashCommand = {
 				);
 
 				const toPin = await channel.send({
+					content: `<@&${modRoleId}>`,
 					embeds: [embed],
 					components: [row],
 				});
