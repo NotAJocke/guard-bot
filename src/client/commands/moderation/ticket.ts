@@ -280,11 +280,13 @@ const command: SlashCommand = {
 						name: interaction.user.tag,
 						iconURL: interaction.user.displayAvatarURL(),
 					})
-					.setTitle(`Sujet: '${interaction.fields.getTextInputValue("sujet")}'`)
+					.setTitle(
+						`**Sujet:** ${interaction.fields.getTextInputValue("sujet")}`
+					)
 					.setDescription(
-						`Description: '${interaction.fields.getTextInputValue(
+						`**Description:** ${interaction.fields.getTextInputValue(
 							"description"
-						)}'`
+						)}`
 					)
 					.setFooter({
 						text: "Patientez un instant, notre équipe se charge de vous",
