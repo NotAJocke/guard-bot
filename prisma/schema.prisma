@@ -82,4 +82,5 @@ model Ticket {
   ticketsConfigId String?
   guild           Guild          @relation(fields: [guildId], references: [id])
   guildId         String
+  opened          Boolean        @default(true)
 }

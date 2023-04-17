@@ -193,7 +193,7 @@ const command: SlashCommand = {
 						new ButtonBuilder()
 							.setCustomId("ticket_close")
 							.setLabel("Confirmer")
-							.setStyle(ButtonStyle.Danger)
+							.setStyle(ButtonStyle.Primary)
 					);
 					interaction.reply({
 						content: "Êtes-vous sûr de vouloir fermer ce ticket ?",
@@ -211,18 +211,72 @@ const command: SlashCommand = {
 				if (
 					await Database.isTicket(interaction.guildId!, interaction.channelId)
 				) {
-					await Database.removeTicket(
+					await interaction.message.delete();
+					await Database.closeTicket(
 						interaction.guildId!,
 						interaction.channelId
 					);
 					const channel = interaction.channel as TextChannel;
-					await channel.delete();
+					const modRoleId = await Database.getTicketModRoleId(
+						interaction.guildId!
+					);
+					await channel.permissionOverwrites.set([
+						{
+							id: interaction.guild!.roles.everyone.id,
+							deny: [PermissionFlagsBits.ViewChannel],
+						},
+						{
+							id: modRoleId,
+							allow: [
+								PermissionFlagsBits.ViewChannel,
+								PermissionFlagsBits.AttachFiles,
+								PermissionFlagsBits.SendMessages,
+							],
+						},
+					]);
+					const row = new ActionRowBuilder<ButtonBuilder>().setComponents(
+						new ButtonBuilder()
+							.setCustomId("ticket_delete")
+							.setLabel("Supprimer")
+							.setStyle(ButtonStyle.Danger),
+						new ButtonBuilder()
+							.setCustomId("ticket_open")
+							.setLabel("Réouvrir")
+							.setStyle(ButtonStyle.Primary)
+					);
+					interaction.reply({ content: "Ticket fermé.", components: [row] });
 				} else {
 					interaction.reply({
 						content: "Ce salon n'est pas un ticket",
 						ephemeral: true,
 					});
 				}
+				break;
+			}
+			case "delete": {
+				await Database.removeTicket(
+					interaction.guildId!,
+					interaction.channelId
+				);
+				const channel = interaction.channel as TextChannel;
+				await channel.delete();
+				break;
+			}
+			case "open": {
+				await interaction.message.delete();
+				const ownerId = await Database.openTicket(
+					interaction.guildId!,
+					interaction.channelId
+				);
+				await (<TextChannel>interaction.channel).permissionOverwrites.create(
+					ownerId,
+					{
+						ViewChannel: true,
+						SendMessages: true,
+						AttachFiles: true,
+					}
+				);
+				interaction.reply({ content: "Ticket réouvert", ephemeral: true });
 				break;
 			}
 		}
@@ -301,7 +355,11 @@ const command: SlashCommand = {
 						.setStyle(ButtonStyle.Secondary)
 				);
 
-				channel.send({ embeds: [embed], components: [row] });
+				const toPin = await channel.send({
+					embeds: [embed],
+					components: [row],
+				});
+				await toPin.pin();
 				break;
 		}
 	},

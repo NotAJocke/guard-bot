@@ -1,4 +1,4 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, MessageType } from "discord.js";
 import { Event } from "../models/event";
 import { Database } from "../utils/database";
 import { isNumber } from "../utils/utils";
@@ -10,6 +10,10 @@ const event: Event = {
 
 	exec: async (_: Client, msg: Message) => {
 		if (!msg.guild) return;
+
+		if (msg.type === MessageType.ChannelPinnedMessage) {
+			await msg.delete();
+		}
 
 		if (await Database.isAutoReactChannel(msg.guildId!, msg.channelId)) {
 			const emojis = await Database.getAutoReactEmoji(
